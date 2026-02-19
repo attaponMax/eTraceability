@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pansy Traceability - ตรวจสอบย้อนกลับดอกแพนซี</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS Variables & Reset --- */
+        :root {
+            /* Pansy Theme Colors */
+            --primary-color: #3F51B5; /* สีม่วงน้ำเงินเข้ม */
+            --secondary-color: #FFC107; /* สีเหลืองทองสำหรับจุดเด่น */
+            --accent-bg: #E8EAF6; /* สีพื้นหลังส่วนหัวจางๆ */
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-body: #f4f6f8;
+            --white: #ffffff;
+            --success-color: #27ae60;
+            --card-shadow: 0 4px 20px rgba(63, 81, 181, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* --- Main Layout Container --- */
+        .container {
+            max-width: 1200px; /* ขยายความกว้างสูงสุดเพื่อรองรับจอคอมฯ */
+            margin: 0 auto;
+            background-color: var(--white);
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.05);
+            overflow: hidden; /* ป้องกันขอบเกิน */
+        }
+
+        /* --- Header Section --- */
+        header {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+        }
+        /* เพิ่มลายกราฟิกดอกไม้จางๆ ที่พื้นหลัง Header */
+        header::before {
+            content: '🌸';
+            position: absolute;
+            top: 10%; left: 5%; font-size: 3rem; opacity: 0.1;
+        }
+        header::after {
+            content: '🌱';
+            position: absolute; bottom: 10%; right: 5%; font-size: 2.5rem; opacity: 0.1;
+        }
+
+        header h1 {
+            font-weight: 700; font-size: 1.6rem; letter-spacing: 1px; margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        header p { font-weight: 300; font-size: 0.95rem; opacity: 0.9; }
+
+        /* --- Hero Product Section (Redesigned) --- */
+        .hero-product-card {
+            background: var(--white);
+            margin: 20px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            border-top: 4px solid var(--secondary-color);
+        }
+
+        .product-image-wrapper {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 25px;
+        }
+
+        .product-image-wrapper img {
+            width: 100%; height: 100%; object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid var(--accent-bg);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        /* ป้าย Status แบบลอย */
+        .status-floating-badge {
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%) translateY(50%);
+            background-color: var(--success-color);
+            color: var(--white);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 600; font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.4);
+            white-space: nowrap;
+        }
+
+        .product-name {
+            font-size: 1.8rem; font-weight: 700; color: var(--primary-color);
+            margin-top: 20px; margin-bottom: 5px;
+        }
+
+        .lot-no {
+            display: inline-block;
+            background-color: var(--accent-bg);
+            color: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem; font-weight: 500;
+        }
+
+        /* --- Responsive Grid Layout --- */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* มือถือ: 1 คอลัมน์ */
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* Tablet Tablet Portrait (>= 768px) */
+        @media (min-width: 768px) {
+            .content-grid {
+                grid-template-columns: repeat(2, 1fr); /* แท็บเล็ต: 2 คอลัมน์ */
+            }
+             /* ให้การ์ดคำแนะนำ (ใบที่ 3) ขยายเต็มความกว้างในแถวใหม่ */
+            .info-card:nth-child(3) {
+                grid-column: span 2;
+            }
+             /* จัด Hero Section แนวนอน */
+            .hero-product-card {
+                display: flex; align-items: center; text-align: left; gap: 30px;
+            }
+            .product-image-wrapper { margin: 0; }
+            .product-name { margin-top: 0; }
+        }
+
+        /* Desktop (>= 1024px) */
+        @media (min-width: 1024px) {
+            .content-grid {
+                grid-template-columns: repeat(3, 1fr); /* คอมพิวเตอร์: 3 คอลัมน์ */
+            }
+            /* รีเซ็ตการขยายของลการ์ดคำแนะนำ */
+            .info-card:nth-child(3) { grid-column: auto; }
+        }
+
+        /* --- Info Cards Styling --- */
+        .info-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .info-card:hover {
+             border-left-color: var(--secondary-color);
+             transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 1.25rem; font-weight: 700; color: var(--primary-color);
+            margin-bottom: 20px; display: flex; align-items: center;
+            padding-bottom: 10px; border-bottom: 1px solid var(--accent-bg);
+        }
+        .card-title .icon-bg {
+            background-color: var(--accent-bg); color: var(--primary-color);
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 12px; font-size: 1.2rem;
+        }
+
+        .data-list { list-style: none; }
+        .data-list li {
+            margin-bottom: 12px; display: flex; justify-content: space-between;
+            align-items: baseline;
+        }
+        .data-label { font-weight: 500; color: var(--text-light); font-size: 0.95rem; }
+        .data-value { font-weight: 600; color: var(--text-dark); text-align: right; }
+
+        /* Advice Section Specifics */
+        .advice-group { margin-bottom: 20px; }
+        .advice-group:last-child { margin-bottom: 0; }
+        .sub-title {
+            font-weight: 600; font-size: 1rem; color: var(--primary-color);
+            margin-bottom: 10px; display: flex; align-items: center;
+        }
+        .sub-title::before {
+            content: ''; display: inline-block; width: 8px; height: 8px;
+            background-color: var(--secondary-color); border-radius: 50%; margin-right: 8px;
+        }
+        .advice-list { list-style-type: none; padding-left: 5px; color: var(--text-dark); }
+        .advice-list li {
+            margin-bottom: 8px; padding-left: 20px; position: relative; font-size: 0.95rem;
+        }
+        .advice-list li::before {
+            content: '•'; color: var(--text-light); position: absolute; left: 0; top: 0;
+        }
+
+        /* --- Footer Section --- */
+        .footer-contact {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 30px 20px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .footer-contact h3 { font-size: 1.2rem; margin-bottom: 15px; color: var(--secondary-color); }
+        .contact-info p { margin-bottom: 8px; font-size: 0.95rem; opacity: 0.9; }
+        .contact-info a { color: var(--secondary-color); text-decoration: none; font-weight: 500; }
+        .contact-info a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🌸 Flower Traceability</h1>
+            <p>ระบบตรวจสอบย้อนกลับดอกไม้กินได้แบบเรียลไทม์</p>
+        </header>
+
+        <div class="hero-product-card">
+            <div class="product-image-wrapper">
+                <img src="https://leaffyco.com/wp-content/uploads/2024/12/Pansy-Mix-Seeds_1.jpg" alt="ดอกแพนซีหลากสี">
+                <div class="status-floating-badge">
+                    ✅ พร้อมจำหน่าย
+                </div>
+            </div>
+            <div class="product-details">
+                <h2 class="product-name">ดอกหน้าแมว / แพนซี (Pansy Mix)</h2>
+                <span class="lot-no">Lot No: LOT-20260218-02</span>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            
+            <div class="info-card">
+                <h3 class="card-title">
+                    <span class="icon-bg">📦</span> ข้อมูลล็อตการผลิต
+                </h3>
+                <ul class="data-list">
+                    <li>
+                        <span class="data-label">Product ID:</span>
+                        <span class="data-value">FLW-PS-002</span>
+                    </li>
+                    <li>
+                        <span class="data-label">วันที่เก็บเกี่ยว:</span>
+                        <span class="data-value">17 ก.พ. 2026</span>
+                    </li>
+                    <li>
+                        <span class="data-label">วันที่แพ็ค:</span>
+                        <span class="data-value">18 ก.พ. 2026</span>
+                    </li>
+                    <li>
+                        <span class="data-label">ควรบริโภคก่อน:</span>
+                        <span class="data-value" style="color: #e74c3c;">24 ก.พ. 2026</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3 class="card-title">
+                    <span class="icon-bg">🌱</span> แหล่งเพาะปลูก
+                </h3>
+                <ul class="data-list">
+                    <li>
+                        <span class="data-label">ชื่อฟาร์ม:</span>
+                        <span class="data-value">สวนดอกไม้ลุงสมชาย</span>
+                    </li>
+                    <li>
+                        <span class="data-label">ที่ตั้ง:</span>
+                        <span class="data-value">อ.แม่ริม จ.เชียงใหม่</span>
+                    </li>
+                    <li>
+                        <span class="data-label">โซน/แปลง:</span>
+                        <span class="data-value">โซน B (โรงเรือนปิด)</span>
+                    </li>
+                    <li>
+                        <span class="data-label">มาตรฐาน:</span>
+                        <span class="data-value">GAP, Organically Grown</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="info-card">
+                <h3 class="card-title">
+                    <span class="icon-bg">🍽</span> คำแนะนำการบริโภค
+                </h3>
+                
+                <div class="advice-group">
+                    <h4 class="sub-title">การเก็บรักษา (สำคัญ):</h4>
+                    <ul class="advice-list">
+                        <li>เก็บในตู้เย็นช่องธรรมดา (1-4°C) ทันที</li>
+                        <li>คงความชื้นโดยวางบนกระดาษทิชชู่เปียกหมาดในกล่องปิดสนิท</li>
+                        <li>แพนซีบอบบาง ควรใช้ภายใน 3-5 วันหลังได้รับ</li>
+                    </ul>
+                </div>
+
+                <div class="advice-group">
+                    <h4 class="sub-title">ไอเดียเมนู:</h4>
+                    <ul class="advice-list">
+                        <li>ตกแต่งหน้าเค้ก หรือ คัพเค้ก (สียอดนิยม)</li>
+                        <li>ลอยในเครื่องดื่มค็อกเทล/ม็อกเทล</li>
+                        <li>ใส่ในสลัดผักเพิ่มสีสัน</li>
+                        <li>ทำดอกไม้เคลือบน้ำตาล (Crystallized Flowers)</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div> <footer class="footer-contact">
+            <h3>📞 สอบถามข้อมูลเพิ่มเติม</h3>
+            <div class="contact-info">
+                <p><strong>บริษัท ดอกไม้กินได้ จำกัด (Edible Flowers Co.)</strong></p>
+                <p>โทร: <a href="tel:08XXXXXXXX">08X-XXX-XXXX</a> (จันทร์-เสาร์ 8:00-17:00)</p>
+                <p>Line ID: @edibleflowerth</p>
+                <p>เว็บไซต์: <a href="#" target="_blank">www.edibleflower.co.th</a></p>
+            </div>
+        </footer>
+
+    </div> </body>
+</html>
